@@ -14,6 +14,7 @@ h2 {
 }
 
 img {
+    size: 640px;
     width: 50%;
 }
 
@@ -40,7 +41,7 @@ section {
 	margin: 25px;
 	background: rgba(108, 89, 110, .7);
 	box-shadow: 10px 14px rgba(111, 125, 140, .7);
-    height: 600px;
+    height: 700px;
 }
 
 ul {
@@ -67,4 +68,27 @@ li {
 
 #button-div {
     text-align: center;
+}
+
+a {
+    text-decoration: none;
+    font-size: larger;
+    color: pink;
+    margin: 5%;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.edit-button {
+}
+
+.delete-button {
+    font-family: sans-serif;
+}
+
+#real-delete-button-div {
+    text-align: center;
+    display: none;
 }

@@ -21,7 +21,7 @@ let albums = [
         genre: "Rock",
         year: "1973",
         members: ["David Gilmour","Roger Waters","Nick Mason", "Richard Wright"],
-        picture: "../images/wall.jpeg"
+        cover: "../images/wall.jpeg"
     },
     {
         _id: 2,
@@ -30,7 +30,7 @@ let albums = [
         genre: "Rock",
         year: "1971",
         members: ["John Bonham", "John Paul Jones", "Jimmy Page", "Robert Plant"],
-        picture: "../images/IV.jpeg"
+        cover: "../images/IV.jpeg"
     },
     {
         _id: 3,
@@ -39,7 +39,7 @@ let albums = [
         genre: "Indie Rock",
         year: "2005",
         members: ["Raul Panther III","Murphy Weller","Commander B. Hawkins", "Sir Dr. Robert Bakker", "Shock Magnum", "Gambler Kirkdouglas", "Reanimator Lovejoy", "K.I.L.R.O.Y."],
-        picture: "../images/protomen.jpeg"
+        cover: "../images/protomen.jpeg"
     },
     {
         _id: 4,
@@ -48,7 +48,7 @@ let albums = [
         genre: "Pop",
         year: "2017",
         members: ["Joe Newman","Thom Sonny Green","Gus Unger-Hamilton"],
-        picture: "../images/relaxer.jpeg"
+        cover: "../images/relaxer.jpeg"
     },
     {
         _id: 5,
@@ -57,7 +57,7 @@ let albums = [
         genre: "Pop",
         year: "2011",
         members: ["Patrick Stump"],
-        picture: "../images/punk.jpeg"
+        cover: "../images/punk.jpeg"
     },
     {
         _id: 6,
@@ -66,7 +66,7 @@ let albums = [
         genre: "Electronic",
         year: "1997",
         members: ["Scott Kirkland","Ken Jordan"],
-        picture: "../images/vegas.jpeg"
+        cover: "../images/vegas.jpeg"
     },
 ];
 
@@ -74,7 +74,7 @@ app.get("/api/data", (req, res) => {
     res.json(albums);
 });
 
-appget("api/data/:id", (req, res) => {
+app.get("api/data/:id", (req, res) => {
     const id = parseInt(req.params.id);
 
     const album = albums.find((al) => al.id === id);
@@ -84,9 +84,9 @@ appget("api/data/:id", (req, res) => {
     }
 
     res.send(album);
-})
+});
 
-app.post("/api/data", upload.single("img"), (req, res) => {
+app.post("/api/data", upload.single("cover"), (req, res) => {
     const result = validateAlbum(req.body);
     if (result.error) {
         res.status(400).send(result.error.details[0].message);
@@ -105,11 +105,15 @@ app.post("/api/data", upload.single("img"), (req, res) => {
         album.members = req.body.members.split(",");
     }
 
+    if (req.file) {
+        album.cover = "images/" + req.file.filename;
+    }
+
     albums.push(album);
     res.send(album);
 });
 
-app.put("/api/data/:id", upload.single("img"), (req, res) => {
+app.put("/api/data/:id", upload.single("cover"), (req, res) => {
     const id = parseInt(req.params.id);
     const album = albums.find((al) => al._id === id);
 
@@ -126,7 +130,23 @@ app.put("/api/data/:id", upload.single("img"), (req, res) => {
     if (req.body.members) {
         album.members = req.body.members.split(",");
     }
+    if (req.file) {
+        album.cover = "images/" + req.file.filename;
+    }
 
+    res.send(album);
+});
+
+app.delete("/api/data/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const album = albums.find((al) => al._id === id);
+
+    if (!album) {
+        res.status(404).send("The album with the given id was not found.");
+    }
+    
+    const index = albums.indexOf(album);
+    albums.splice(index, 1);
     res.send(album);
 });
 

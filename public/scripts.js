@@ -19,7 +19,7 @@ const addAlbum = async (e) => {
             body: formData
         });
     } else {
-        // Existing recipe
+        // Existing album
         response = await fetch(`/api/data/${form._id.value}`, {
             method: "PUT",
             body: formData
@@ -100,7 +100,7 @@ const showAlbums = async() => {
         let img = document.createElement("img");
         img.classList.add("cover");
         section.append(img);
-        img.src= album.picture;
+        img.src= album.cover;
 
         let band = document.createElement("p");
         section.append(band);
@@ -131,15 +131,21 @@ const showAlbums = async() => {
 
         let editButton = document.createElement("a");
         editButton.href = "#";
-        editButton.innerHTML = "&#9998"
+        editButton.innerHTML = "&#9998";
         editButton.classList.add("edit-button");
         buttonDiv.append(editButton);
 
         let deleteButton = document.createElement("a");
         deleteButton.href = "#";
-        deleteButton.innerHTML = "X"
+        deleteButton.innerHTML = "X";
         deleteButton.classList.add("delete-button");
         buttonDiv.append(deleteButton);
+
+        let realDeleteButtonDiv = document.createElement("div");
+        realDeleteButtonDiv.classList.add("real-delete-button-div");
+        section.append(realDeleteButtonDiv);
+
+        
 
         editButton.onclick = (e) => {
             e.preventDefault();
@@ -150,10 +156,44 @@ const showAlbums = async() => {
 
         deleteButton.onclick = (e) => {
             e.preventDefault();
-            
+            deleteCheck(album);
         }
     });
 };
+
+const deleteCheck = (album) => {
+    document.getElementById("real-delete-button-div").style.display = "block";
+    document.getElementById("real-delete-button").onclick = (e) => {
+        e.preventDefault();
+        deleteAlbum(album);
+    }
+    document.getElementById("cancel-button").onclick = (e) => {
+        e.preventDefault();
+        document.getElementById("real-delete-button-div").style.display = "none";
+    }
+}
+
+const deleteAlbum = async (album) => {
+    
+    
+    let response = await fetch(`/api/data/${album._id}`, {
+        method: "DELETE", 
+        headers: {
+            "Content-Type":"application/json;charset=utf-8",
+        }
+    });
+
+    if (response.status != 200) {
+        console.log("Error deleting");
+        return;
+    }
+
+    let result = await response.json();
+    document.getElementById("real-delete-button-div").style.display = "none";
+    showAlbums();
+    resetForm();
+
+}
 
 const addShowHide = () => {
     if (toggle) {
