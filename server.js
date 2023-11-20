@@ -74,6 +74,18 @@ app.get("/api/data", (req, res) => {
     res.json(albums);
 });
 
+appget("api/data/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const album = albums.find((al) => al.id === id);
+    
+    if (!album) {
+        res.status(404).send("The album with the given id was not found.");
+    }
+
+    res.send(album);
+})
+
 app.post("/api/data", upload.single("img"), (req, res) => {
     const result = validateAlbum(req.body);
     if (result.error) {
@@ -99,14 +111,20 @@ app.post("/api/data", upload.single("img"), (req, res) => {
 
 app.put("/api/data/:id", upload.single("img"), (req, res) => {
     const id = parseInt(req.params.id);
-    const album = albums.find((al) => {
-        al._id === id;
-    });
+    const album = albums.find((al) => al._id === id);
 
     const result = validateAlbum(req.body);
     if (result.error) {
         res.status(400).send(result.error.details[0].message);
         return;
+    }
+
+    album.name = req.body.name;
+    album.band = req.body.band;
+    album.genre = req.body.genre;
+    album.year = req.body.year;
+    if (req.body.members) {
+        album.members = req.body.members.split(",");
     }
 
     res.send(album);

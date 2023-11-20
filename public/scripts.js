@@ -46,6 +46,7 @@ const resetForm = () => {
     const form = document.getElementById("add-album-form");
     form.reset();
     form._id = "-1";
+    count = 0;
     document.getElementById("album-list-left").innerHTML = "";
     document.getElementById("album-list-center").innerHTML = "";
     document.getElementById("album-list-right").innerHTML = "";
@@ -142,7 +143,7 @@ const showAlbums = async() => {
 
         editButton.onclick = (e) => {
             e.preventDefault();
-            addShowHide();
+            document.getElementById("add-album-box").style.display = "block";
             document.getElementById("add-album-title").innerHTML = "Edit Album";
             populateEditForm(album);
         }
@@ -151,7 +152,6 @@ const showAlbums = async() => {
             e.preventDefault();
             
         }
-
     });
 };
 
@@ -171,11 +171,6 @@ const addMember = (e) => {
     const input = document.createElement("input");
     input.type = "text";
     memberDiv.append(input);
-}
-
-const editAlbum = (album) => {
-    addShowHide();
-    populateEditForm();
 }
 
 const populateEditForm = (album) => {
@@ -198,10 +193,6 @@ const populateMembers = (members) => {
         input.value = member;
         memberDiv.append(input);
     });
-}
-
-const deleteAlbum = () => {
-
 }
 
 window.onload = () => {
